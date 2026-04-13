@@ -398,7 +398,14 @@ function ModelMesh({ model }: { model: ModelPreview }) {
       {model.shape_type === "cylinder" && (
         <cylinderGeometry args={[model.radius, model.radius, model.height, 48]} />
       )}
-      <meshStandardMaterial color={model.color} roughness={0.55} metalness={0.08} />
+      <meshStandardMaterial
+        color={model.color}
+        roughness={0.55}
+        metalness={0.08}
+        transparent
+        opacity={0.58}
+        depthWrite={false}
+      />
     </mesh>
   );
 }
