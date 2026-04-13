@@ -1,7 +1,7 @@
 import { StrictMode, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Canvas, useThree, type ThreeEvent } from "@react-three/fiber";
-import { ContactShadows, Grid, OrbitControls } from "@react-three/drei";
+import { ContactShadows, Edges, Grid, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 import {
@@ -406,6 +406,7 @@ function ModelMesh({ model }: { model: ModelPreview }) {
         opacity={0.58}
         depthWrite={false}
       />
+      <Edges color="#000000" lineWidth={3} threshold={15} />
     </mesh>
   );
 }
