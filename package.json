@@ -1,0 +1,12 @@
+{
+  "name": "openapi-cad-preview",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "backend": "python -m uvicorn backend.app.main:app --reload --port 8000",
+    "openapi": "python backend/export_openapi.py",
+    "frontend": "cd frontend && npm run dev",
+    "gen:types": "cd frontend && npm run gen:types",
+    "build": "cd frontend && npm run build"
+  }
+}

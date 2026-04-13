@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+
+frontend/node_modules/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+
+.codex/*-server.log
+.codex/*-server.err.log
+.codex/playwright-*.png
+.codex/playwright-*.png
