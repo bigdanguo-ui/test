@@ -3,9 +3,16 @@
 一个最小的 Python + OpenAPI + React 示例：
 
 - 后端使用 FastAPI 暴露 OpenAPI schema。
-- 后端使用 CadQuery 创建 box、sphere、cylinder 三类几何体，并返回体积与包围盒。
-- 前端使用 React、TypeScript、Three.js 渲染三维预览。
+- 后端使用 CadQuery 创建 box、sphere、cylinder 三类几何体，并返回中心点、体积与包围盒。
+- 前端使用 React、TypeScript、Three.js 渲染三维预览，并支持拖动小球调节模型。
 - 前端类型通过 `openapi-typescript` 从 `backend/openapi.json` 生成。
+
+## 交互
+
+- Box：拖动黑色顶点小球拉伸盒体，拖动白色中心小球移动中心点。
+- Sphere：拖动黑色半径小球调整半径，拖动白色中心小球移动中心点。
+- Cylinder：拖动黑色侧向小球调整半径，拖动上下小球调整高度，拖动白色中心小球移动中心点。
+- 拖动过程中前端即时更新模型，并通过 `POST /api/models/preview` 让后端 CadQuery 实时刷新体积和包围盒。
 
 ## 目录
 

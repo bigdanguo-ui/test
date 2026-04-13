@@ -1,10 +1,16 @@
 from typing import Annotated
 
-from fastapi import FastAPI, HTTPException, Path
+from fastapi import Body, FastAPI, HTTPException, Path
 from fastapi.middleware.cors import CORSMiddleware
 
-from .geometry import GeometryKernelError, get_model_preview, get_model_previews
-from .schemas import HealthResponse, ModelCatalogResponse, ModelPreview, ShapeType
+from .geometry import GeometryKernelError, build_model_preview, get_model_preview, get_model_previews
+from .schemas import (
+    HealthResponse,
+    ModelCatalogResponse,
+    ModelPreview,
+    ModelPreviewRequest,
+    ShapeType,
+)
 
 
 app = FastAPI(
@@ -54,3 +60,16 @@ def read_model(
         raise HTTPException(status_code=404, detail=f"Unknown model type: {shape_type}")
 
     return preview
+
+
+@app.post("/api/models/preview", response_model=ModelPreview)
+def preview_model(
+    request: Annotated[
+        ModelPreviewRequest,
+        Body(description="Primitive parameters to rebuild with CadQuery."),
+    ],
+) -> ModelPreview:
+    try:
+        return build_model_preview(request)
+    except GeometryKernelError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc

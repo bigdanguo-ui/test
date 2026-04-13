@@ -106,6 +106,75 @@
           }
         }
       }
+    },
+    "/api/models/preview": {
+      "post": {
+        "summary": "Preview Model",
+        "operationId": "preview_model_api_models_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/BoxPreviewRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SpherePreviewRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CylinderPreviewRequest"
+                  }
+                ],
+                "title": "Request",
+                "description": "Primitive parameters to rebuild with CadQuery."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/BoxPreview"
+                    },
+                    {
+                      "$ref": "#/components/schemas/SpherePreview"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CylinderPreview"
+                    }
+                  ],
+                  "title": "Response Preview Model Api Models Preview Post",
+                  "discriminator": {
+                    "propertyName": "shape_type",
+                    "mapping": {
+                      "box": "#/components/schemas/BoxPreview",
+                      "sphere": "#/components/schemas/SpherePreview",
+                      "cylinder": "#/components/schemas/CylinderPreview"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -123,6 +192,9 @@
           "color": {
             "type": "string",
             "title": "Color"
+          },
+          "center": {
+            "$ref": "#/components/schemas/Vector3"
           },
           "volume": {
             "type": "number",
@@ -143,16 +215,19 @@
           },
           "width": {
             "type": "number",
+            "maximum": 10.0,
             "exclusiveMinimum": 0.0,
             "title": "Width"
           },
           "height": {
             "type": "number",
+            "maximum": 10.0,
             "exclusiveMinimum": 0.0,
             "title": "Height"
           },
           "depth": {
             "type": "number",
+            "maximum": 10.0,
             "exclusiveMinimum": 0.0,
             "title": "Depth"
           }
@@ -162,6 +237,7 @@
           "id",
           "label",
           "color",
+          "center",
           "volume",
           "bounding_box",
           "width",
@@ -169,6 +245,70 @@
           "depth"
         ],
         "title": "BoxPreview"
+      },
+      "BoxPreviewRequest": {
+        "properties": {
+          "center": {
+            "$ref": "#/components/schemas/Vector3"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "shape_type": {
+            "type": "string",
+            "enum": [
+              "box"
+            ],
+            "const": "box",
+            "title": "Shape Type",
+            "default": "box"
+          },
+          "width": {
+            "type": "number",
+            "maximum": 10.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Width"
+          },
+          "height": {
+            "type": "number",
+            "maximum": 10.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Height"
+          },
+          "depth": {
+            "type": "number",
+            "maximum": 10.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Depth"
+          }
+        },
+        "type": "object",
+        "required": [
+          "center",
+          "width",
+          "height",
+          "depth"
+        ],
+        "title": "BoxPreviewRequest"
       },
       "CylinderPreview": {
         "properties": {
@@ -183,6 +323,9 @@
           "color": {
             "type": "string",
             "title": "Color"
+          },
+          "center": {
+            "$ref": "#/components/schemas/Vector3"
           },
           "volume": {
             "type": "number",
@@ -203,11 +346,13 @@
           },
           "radius": {
             "type": "number",
+            "maximum": 10.0,
             "exclusiveMinimum": 0.0,
             "title": "Radius"
           },
           "height": {
             "type": "number",
+            "maximum": 10.0,
             "exclusiveMinimum": 0.0,
             "title": "Height"
           }
@@ -217,12 +362,70 @@
           "id",
           "label",
           "color",
+          "center",
           "volume",
           "bounding_box",
           "radius",
           "height"
         ],
         "title": "CylinderPreview"
+      },
+      "CylinderPreviewRequest": {
+        "properties": {
+          "center": {
+            "$ref": "#/components/schemas/Vector3"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "shape_type": {
+            "type": "string",
+            "enum": [
+              "cylinder"
+            ],
+            "const": "cylinder",
+            "title": "Shape Type",
+            "default": "cylinder"
+          },
+          "radius": {
+            "type": "number",
+            "maximum": 10.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Radius"
+          },
+          "height": {
+            "type": "number",
+            "maximum": 10.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Height"
+          }
+        },
+        "type": "object",
+        "required": [
+          "center",
+          "radius",
+          "height"
+        ],
+        "title": "CylinderPreviewRequest"
       },
       "HTTPValidationError": {
         "properties": {
@@ -302,6 +505,9 @@
             "type": "string",
             "title": "Color"
           },
+          "center": {
+            "$ref": "#/components/schemas/Vector3"
+          },
           "volume": {
             "type": "number",
             "minimum": 0.0,
@@ -321,6 +527,7 @@
           },
           "radius": {
             "type": "number",
+            "maximum": 10.0,
             "exclusiveMinimum": 0.0,
             "title": "Radius"
           }
@@ -330,11 +537,62 @@
           "id",
           "label",
           "color",
+          "center",
           "volume",
           "bounding_box",
           "radius"
         ],
         "title": "SpherePreview"
+      },
+      "SpherePreviewRequest": {
+        "properties": {
+          "center": {
+            "$ref": "#/components/schemas/Vector3"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "shape_type": {
+            "type": "string",
+            "enum": [
+              "sphere"
+            ],
+            "const": "sphere",
+            "title": "Shape Type",
+            "default": "sphere"
+          },
+          "radius": {
+            "type": "number",
+            "maximum": 10.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Radius"
+          }
+        },
+        "type": "object",
+        "required": [
+          "center",
+          "radius"
+        ],
+        "title": "SpherePreviewRequest"
       },
       "ValidationError": {
         "properties": {
@@ -373,17 +631,14 @@
         "properties": {
           "x": {
             "type": "number",
-            "minimum": 0.0,
             "title": "X"
           },
           "y": {
             "type": "number",
-            "minimum": 0.0,
             "title": "Y"
           },
           "z": {
             "type": "number",
-            "minimum": 0.0,
             "title": "Z"
           }
         },

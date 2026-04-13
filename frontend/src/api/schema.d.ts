@@ -55,6 +55,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/models/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview Model */
+        post: operations["preview_model_api_models_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -67,11 +84,33 @@ export interface components {
             label: string;
             /** Color */
             color: string;
+            center: components["schemas"]["Vector3"];
             /** Volume */
             volume: number;
             bounding_box: components["schemas"]["Vector3"];
             /**
              * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            shape_type: "box";
+            /** Width */
+            width: number;
+            /** Height */
+            height: number;
+            /** Depth */
+            depth: number;
+        };
+        /** BoxPreviewRequest */
+        BoxPreviewRequest: {
+            center: components["schemas"]["Vector3"];
+            /** Color */
+            color?: string | null;
+            /** Label */
+            label?: string | null;
+            /**
+             * Shape Type
+             * @default box
+             * @constant
              * @enum {string}
              */
             shape_type: "box";
@@ -90,11 +129,31 @@ export interface components {
             label: string;
             /** Color */
             color: string;
+            center: components["schemas"]["Vector3"];
             /** Volume */
             volume: number;
             bounding_box: components["schemas"]["Vector3"];
             /**
              * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            shape_type: "cylinder";
+            /** Radius */
+            radius: number;
+            /** Height */
+            height: number;
+        };
+        /** CylinderPreviewRequest */
+        CylinderPreviewRequest: {
+            center: components["schemas"]["Vector3"];
+            /** Color */
+            color?: string | null;
+            /** Label */
+            label?: string | null;
+            /**
+             * Shape Type
+             * @default cylinder
+             * @constant
              * @enum {string}
              */
             shape_type: "cylinder";
@@ -130,11 +189,29 @@ export interface components {
             label: string;
             /** Color */
             color: string;
+            center: components["schemas"]["Vector3"];
             /** Volume */
             volume: number;
             bounding_box: components["schemas"]["Vector3"];
             /**
              * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            shape_type: "sphere";
+            /** Radius */
+            radius: number;
+        };
+        /** SpherePreviewRequest */
+        SpherePreviewRequest: {
+            center: components["schemas"]["Vector3"];
+            /** Color */
+            color?: string | null;
+            /** Label */
+            label?: string | null;
+            /**
+             * Shape Type
+             * @default sphere
+             * @constant
              * @enum {string}
              */
             shape_type: "sphere";
@@ -219,6 +296,39 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoxPreview"] | components["schemas"]["SpherePreview"] | components["schemas"]["CylinderPreview"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_model_api_models_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BoxPreviewRequest"] | components["schemas"]["SpherePreviewRequest"] | components["schemas"]["CylinderPreviewRequest"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {

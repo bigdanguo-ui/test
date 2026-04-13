@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 
 
 ShapeType = Literal["box", "sphere", "cylinder"]
+DIMENSION_FIELD = Field(..., gt=0, le=10)
 
 
 class HealthResponse(BaseModel):
@@ -11,35 +12,36 @@ class HealthResponse(BaseModel):
 
 
 class Vector3(BaseModel):
-    x: float = Field(..., ge=0)
-    y: float = Field(..., ge=0)
-    z: float = Field(..., ge=0)
+    x: float
+    y: float
+    z: float
 
 
 class BasePreview(BaseModel):
     id: str
     label: str
     color: str
+    center: Vector3
     volume: float = Field(..., ge=0)
     bounding_box: Vector3
 
 
 class BoxPreview(BasePreview):
     shape_type: Literal["box"] = "box"
-    width: float = Field(..., gt=0)
-    height: float = Field(..., gt=0)
-    depth: float = Field(..., gt=0)
+    width: float = DIMENSION_FIELD
+    height: float = DIMENSION_FIELD
+    depth: float = DIMENSION_FIELD
 
 
 class SpherePreview(BasePreview):
     shape_type: Literal["sphere"] = "sphere"
-    radius: float = Field(..., gt=0)
+    radius: float = DIMENSION_FIELD
 
 
 class CylinderPreview(BasePreview):
     shape_type: Literal["cylinder"] = "cylinder"
-    radius: float = Field(..., gt=0)
-    height: float = Field(..., gt=0)
+    radius: float = DIMENSION_FIELD
+    height: float = DIMENSION_FIELD
 
 
 ModelPreview = Annotated[
@@ -50,3 +52,33 @@ ModelPreview = Annotated[
 
 class ModelCatalogResponse(BaseModel):
     models: list[ModelPreview]
+
+
+class BasePreviewRequest(BaseModel):
+    center: Vector3
+    color: str | None = None
+    label: str | None = None
+
+
+class BoxPreviewRequest(BasePreviewRequest):
+    shape_type: Literal["box"] = "box"
+    width: float = DIMENSION_FIELD
+    height: float = DIMENSION_FIELD
+    depth: float = DIMENSION_FIELD
+
+
+class SpherePreviewRequest(BasePreviewRequest):
+    shape_type: Literal["sphere"] = "sphere"
+    radius: float = DIMENSION_FIELD
+
+
+class CylinderPreviewRequest(BasePreviewRequest):
+    shape_type: Literal["cylinder"] = "cylinder"
+    radius: float = DIMENSION_FIELD
+    height: float = DIMENSION_FIELD
+
+
+ModelPreviewRequest = Annotated[
+    Union[BoxPreviewRequest, SpherePreviewRequest, CylinderPreviewRequest],
+    Field(discriminator="shape_type"),
+]
